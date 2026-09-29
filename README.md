@@ -34,19 +34,32 @@ main_class: container article-page
 
 ```bash
 python build.py            # собрать в dist/
+python build.py --check    # собрать и проверить внутренние ссылки
 python build.py --serve    # собрать и открыть на http://localhost:8080
 ```
 
 Сборка предупреждает о страницах без перевода и о незакрытых пометках `TODO`.
 
-## Публикация
+## Работа через ветки
 
-Загрузите содержимое папки `dist/` на любой статический хостинг (GitHub Pages, Netlify, Vercel, Cloudflare Pages или обычный веб-хостинг).
+1. От свежего `main` создаётся ветка: `git checkout main && git pull && git checkout -b content/название` (префиксы: `content/` — тексты, `feature/` — функциональность, `fix/` — исправления, `infra/` — сборка и деплой).
+2. Изменения коммитятся в ветку и отправляются: `git push -u origin content/название`.
+3. Открывается pull request: `gh pr create --base main`.
+4. GitHub Actions собирает сайт и проверяет ссылки, Netlify публикует превью ветки по отдельной ссылке — её можно показать работодателю до слияния.
+5. После проверки PR сливается в `main`, и Netlify автоматически обновляет боевой сайт.
 
-Перед публикацией проверьте в `build.py`:
+## Публикация (Netlify)
 
-- `BASE_URL` — адрес сайта (сейчас `https://urowoman.kz`);
-- `BASE_PATH` — `/` для собственного домена или `/UroWoman/`, если сайт открывается по адресу вида `username.github.io/UroWoman/`.
+Настройки лежат в `netlify.toml`: Netlify запускает `python3 build.py --check` и публикует папку `dist/`. Адрес сайта для canonical и sitemap берётся из переменной Netlify `URL`, поэтому после подключения домена в Netlify (*Domain management → Add a domain*) ничего в коде менять не нужно.
+
+## Статистика посещений (GoatCounter)
+
+1. Зарегистрируйтесь на [goatcounter.com](https://www.goatcounter.com) и выберите код сайта, например `urowoman` → `https://urowoman.goatcounter.com`.
+2. Впишите код в `GOATCOUNTER_CODE` в `netlify.toml` (или в Netlify: *Site configuration → Environment variables*).
+3. Счётчик подключается только на боевом сайте (ветка `main`), превью веток не учитываются.
+4. Для работодателя: *Settings → Users → Add user* с правом просмотра или *Settings → Sites → Allow public access to dashboard*.
+
+Кроме просмотров страниц учитывается событие `iciq-sf-completed-<язык>` — сколько раз пройден онлайн-тест (ответы и баллы не отправляются).
 
 ## Перед запуском
 

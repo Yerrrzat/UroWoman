@@ -124,6 +124,10 @@
         `<p class="small-note">${escapeHtml(t.date)}: ${escapeHtml(today)}</p>` +
         `<button type="button" class="button button-secondary no-print" data-print>${escapeHtml(t.print)}</button>`;
       iciqResult.classList.add('visible');
+      // Count completions in GoatCounter (production only). Answers and scores are never sent.
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: `iciq-sf-completed-${lang}`, title: 'ICIQ-SF completed', event: true });
+      }
       iciqResult.querySelector('[data-print]').addEventListener('click', () => window.print());
       iciqResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       iciqResult.focus({ preventScroll: true });

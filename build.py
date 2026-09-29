@@ -5,13 +5,22 @@ Reads page fragments from site/pages/<lang>/<slug>.html, wraps them in the
 shared layout and writes a ready-to-host site into dist/.
 
     python build.py            # build into dist/
+    python build.py --check    # build and fail on broken internal links
     python build.py --serve    # build and serve on http://localhost:8080
 
 Only the Python standard library is used.
+
+Environment variables:
+    SITE_URL          public address (canonical links, sitemap). On Netlify the
+                      built-in URL variable is used, so a custom domain is
+                      picked up automatically once it is attached.
+    GOATCOUNTER_CODE  GoatCounter site code (the "xxx" in xxx.goatcounter.com).
+                      The counter is added only to production builds.
 """
 import hashlib
 import html
 import json
+import os
 import re
 import shutil
 import sys
@@ -23,9 +32,14 @@ SRC = ROOT / "site"
 DIST = ROOT / "dist"
 
 # Public address of the site. Used for canonical links, hreflang and sitemap.
-BASE_URL = "https://urowoman.kz"
+BASE_URL = (os.environ.get("SITE_URL") or os.environ.get("URL") or "http://localhost:8080").rstrip("/")
 # Path the site is served from ("/" for a domain root, "/UroWoman/" for a GitHub Pages project site).
 BASE_PATH = "/"
+
+# Visitor statistics. Netlify sets CONTEXT to "production" only for the main branch,
+# so deploy previews of other branches are not counted.
+GOATCOUNTER_CODE = os.environ.get("GOATCOUNTER_CODE", "").strip()
+ANALYTICS_ENABLED = bool(GOATCOUNTER_CODE) and os.environ.get("CONTEXT", "production") == "production"
 
 LANGS = ["ru", "kk", "en"]
 DEFAULT_LANG = "ru"
@@ -147,6 +161,10 @@ def render(lang, slug, page, slugs, versions, root, link_base=""):
     main_attr = f' class="{esc(main_class)}"' if main_class else ""
     hero = f"\n    {page['hero']}" if page["hero"] else ""
     title = page["title"] if slug == "index" else f"{page['title']} — UroWoman Kazakhstan"
+    analytics = ""
+    if ANALYTICS_ENABLED:
+        analytics = (f'\n  <script data-goatcounter="https://{esc(GOATCOUNTER_CODE)}.goatcounter.com/count" '
+                     'async src="https://gc.zgo.at/count.js"></script>')
     og_url = "" if slug == "404" else f'\n  <meta property="og:url" content="{page_url(lang, slug)}" />'
 
     return f"""<!DOCTYPE html>
@@ -198,7 +216,7 @@ def render(lang, slug, page, slugs, versions, root, link_base=""):
   </footer>
 
   <script src="{root}assets/search-index.js?v={versions['search-index.js']}" defer></script>
-  <script src="{root}assets/script.js?v={versions['script.js']}" defer></script>
+  <script src="{root}assets/script.js?v={versions['script.js']}" defer></script>{analytics}
 </body>
 </html>
 """
@@ -278,7 +296,33 @@ def build():
     (DIST / "favicon.svg").write_bytes((SRC / "assets" / "favicon.svg").read_bytes())
 
     total = sum(len(p) for p in pages.values())
-    print(f"built {total} pages into {DIST.relative_to(ROOT)}/")
+    print(f"built {total} pages into {DIST.relative_to(ROOT)}/"
+          + (f" (GoatCounter: {GOATCOUNTER_CODE})" if ANALYTICS_ENABLED else " (analytics off)"))
+
+
+def check_links():
+    """Return internal links and #anchors in dist/ that point nowhere."""
+    broken = []
+    for page in sorted(DIST.rglob("*.html")):
+        text = page.read_text(encoding="utf-8")
+        for href in re.findall(r'(?:href|src)="([^"]+)"', text):
+            if href.startswith(("http:", "https:", "mailto:", "tel:")):
+                continue
+            path, _, fragment = html.unescape(href).partition("#")
+            path = path.split("?")[0]
+            if not path:
+                target = page
+            elif path.startswith("/"):
+                target = DIST / path.lstrip("/")
+            else:
+                target = (page.parent / path).resolve()
+            if target.is_dir():
+                target = target / "index.html"
+            if not target.exists():
+                broken.append(f"{page.relative_to(DIST)} -> {href}")
+            elif fragment and target.suffix == ".html" and f'id="{fragment}"' not in target.read_text(encoding="utf-8"):
+                broken.append(f"{page.relative_to(DIST)} -> {href} (missing anchor)")
+    return broken
 
 
 def serve(port=8080):
@@ -291,5 +335,11 @@ def serve(port=8080):
 
 if __name__ == "__main__":
     build()
+    if "--check" in sys.argv:
+        broken = check_links()
+        if broken:
+            print("broken links:\n  " + "\n  ".join(broken))
+            sys.exit(1)
+        print("links ok")
     if "--serve" in sys.argv:
         serve()
