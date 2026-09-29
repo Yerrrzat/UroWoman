@@ -909,3 +909,5 @@ a.info-card, a.feature-card, a.news-card, a.pub-card, a.tool-card, a.service-car
   .header-tools { flex-wrap: nowrap; }
   .header-tools .site-search { flex: 1; width: auto; min-width: 0; }
 }
+.hero-subtitle { margin: -.4rem 0 1.1rem; color: #a94268; font-size: clamp(1.15rem, 2vw, 1.45rem); font-weight: 700; line-height: 1.35; }
+.card-grid.auto-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
