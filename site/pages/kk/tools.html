@@ -1,69 +1,65 @@
 <!--
 title: ICIQ-SF онлайн тесті
 description: Зәр ұстамаудың жиілігін және оның өмірге әсерін бағалауға арналған ICIQ-SF қысқа сауалнамасы. Нәтижені дәрігер үшін басып шығаруға болады.
-main_class:
+layout: article
 -->
-    <section class="container section-block tool-workspace" id="iciq-sf">
-      <div class="section-header">
-        <p class="eyebrow">Онлайн тест</p>
-        <h1>ICIQ-SF сауалнамасы</h1>
-        <p><strong>Соңғы 4 аптада</strong> өзіңізді қалай сезінгеніңізді еске түсіріп, сұрақтарға жауап беріңіз. Бұл шамамен 2 минут алады.</p>
-        <p class="tool-disclaimer">Нәтиже шамамен алынған және диагноз болып табылмайды. Жауаптар тек сіздің браузеріңізде өңделеді: олар сақталмайды және ешқайда жіберілмейді.</p>
-      </div>
-      <form class="assessment-form" id="iciq-form">
-        <fieldset>
-          <legend>1. Сізде зәр қаншалықты жиі ағады?</legend>
-          <label><input type="radio" name="frequency" value="0" required /> Ешқашан</label>
-          <label><input type="radio" name="frequency" value="1" /> Аптасына шамамен бір рет немесе сирегірек</label>
-          <label><input type="radio" name="frequency" value="2" /> Аптасына екі-үш рет</label>
-          <label><input type="radio" name="frequency" value="3" /> Күніне шамамен бір рет</label>
-          <label><input type="radio" name="frequency" value="4" /> Күніне бірнеше рет</label>
-          <label><input type="radio" name="frequency" value="5" /> Үнемі</label>
-        </fieldset>
-        <fieldset>
-          <legend>2. Сіздің ойыңызша, әдетте қанша зәр ағады (қорғаныс құралымен немесе онсыз)?</legend>
-          <label><input type="radio" name="amount" value="0" required /> Мүлдем ақпайды</label>
-          <label><input type="radio" name="amount" value="2" /> Аз мөлшерде</label>
-          <label><input type="radio" name="amount" value="4" /> Орташа мөлшерде</label>
-          <label><input type="radio" name="amount" value="6" /> Көп мөлшерде</label>
-        </fieldset>
-        <fieldset>
-          <legend>3. Жалпы алғанда, зәрдің ағуы күнделікті өміріңізге қаншалықты кедергі келтіреді? Таңдалғаны: <span class="impact-value" id="impact-value">0</span></legend>
-          <input class="range-input" type="range" name="impact" min="0" max="10" step="1" value="0" aria-label="Күнделікті өмірге әсері, 0-ден 10-ға дейін" />
-          <div class="range-labels"><span>0 — мүлдем кедергі жоқ</span><span>10 — өте қатты</span></div>
-        </fieldset>
-        <fieldset>
-          <legend>4. Зәр қашан ағады? Өзіңізге қатыстының бәрін белгілеңіз.</legend>
-          <span class="option-hint">Бұл сұрақ ұпайға әсер етпейді, бірақ дәрігерге белгілердің түрін анықтауға көмектеседі.</span>
-          <label><input type="checkbox" name="situation" value="дәретханаға жетпей жатып" /> Дәретханаға жетпей жатып</label>
-          <label><input type="checkbox" name="situation" value="жөтелгенде немесе түшкіргенде" /> Жөтелгенде немесе түшкіргенде</label>
-          <label><input type="checkbox" name="situation" value="ұйқы кезінде" /> Ұйқы кезінде</label>
-          <label><input type="checkbox" name="situation" value="дене белсенділігі кезінде" /> Дене белсенділігі немесе жаттығу кезінде</label>
-          <label><input type="checkbox" name="situation" value="зәр шығарып, киінгеннен кейін" /> Зәр шығарып, киінгеннен кейін</label>
-          <label><input type="checkbox" name="situation" value="айқын себепсіз" /> Айқын себепсіз</label>
-          <label><input type="checkbox" name="situation" value="үнемі" /> Үнемі</label>
-        </fieldset>
-        <div class="form-actions">
-          <button class="button button-primary" type="submit">Нәтижені есептеу</button>
-          <button class="button button-secondary" type="reset">Жауаптарды тазалау</button>
-        </div>
-      </form>
-      <div class="assessment-result" id="iciq-result" aria-live="polite" tabindex="-1"></div>
-      <p class="source-note">ICIQ-SF — International Consultation on Incontinence Questionnaire – Short Form (Avery K. et al., Neurourol Urodyn 2004). Ауырлық дәрежесі Klovning A. et al., Neurourol Urodyn 2009 бойынша. Сауалнаманың құқық иесі — <a href="https://iciq.net" target="_blank" rel="noopener">ICIQ</a>.</p>
-    </section>
+<div class="tool-intro">
+<p class="crumbs"><a href="index.html">Басты бет</a> / ICIQ-SF тесті</p>
+<h1 id="iciq-sf">ICIQ-SF тесті</h1>
+<p class="lead">Дәрігерлер зәрдің қаншалықты жиі ағатынын және оның өмірге қаншалықты кедергі келтіретінін бағалау үшін қолданатын халықаралық сауалнама. <strong>Соңғы 4 аптада</strong> өзіңізді қалай сезінгеніңізді еске түсіріңіз. Бұл шамамен 2 минут алады.</p>
+<aside class="note"><p>Нәтиже шамамен алынған және диагноз болып табылмайды. Жауаптар тек сіздің браузеріңізде өңделеді: олар сақталмайды және ешқайда жіберілмейді.</p></aside>
+</div>
 
-    <section class="container section-block">
-      <div class="section-header">
-        <h2>Нәтижені қалай пайдалану керек</h2>
-      </div>
-      <div class="grid-2">
-        <div class="feature-card">
-          <h3>Пациенттерге</h3>
-          <p>Тестті үйде толтырып, нәтижені басып шығарыңыз немесе PDF ретінде сақтап, дәрігерге көрсетіңіз. Нәтиже — диагноз емес, әңгімеге себеп.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Дәрігерлерге</h3>
-          <p>Ұпай сомасы белгілердің айқындылығын бағалауға және ем барысындағы динамиканы бақылауға көмектеседі; соңғы сұраққа берілген жауаптар зәр ұстамаудың жетекші түрін көрсетеді.</p>
-        </div>
-      </div>
-    </section>
+<form class="assessment-form" id="iciq-form">
+  <fieldset>
+    <legend>1. Сізде зәр қаншалықты жиі ағады?</legend>
+    <label><input type="radio" name="frequency" value="0" required /> Ешқашан</label>
+    <label><input type="radio" name="frequency" value="1" /> Аптасына шамамен бір рет немесе сирегірек</label>
+    <label><input type="radio" name="frequency" value="2" /> Аптасына екі-үш рет</label>
+    <label><input type="radio" name="frequency" value="3" /> Күніне шамамен бір рет</label>
+    <label><input type="radio" name="frequency" value="4" /> Күніне бірнеше рет</label>
+    <label><input type="radio" name="frequency" value="5" /> Үнемі</label>
+  </fieldset>
+  <fieldset>
+    <legend>2. Сіздің ойыңызша, әдетте қанша зәр ағады (қорғаныс құралымен немесе онсыз)?</legend>
+    <label><input type="radio" name="amount" value="0" required /> Мүлдем ақпайды</label>
+    <label><input type="radio" name="amount" value="2" /> Аз мөлшерде</label>
+    <label><input type="radio" name="amount" value="4" /> Орташа мөлшерде</label>
+    <label><input type="radio" name="amount" value="6" /> Көп мөлшерде</label>
+  </fieldset>
+  <fieldset>
+    <legend>3. Жалпы алғанда, зәрдің ағуы күнделікті өміріңізге қаншалықты кедергі келтіреді? Таңдалғаны: <span class="impact-value" id="impact-value">0</span></legend>
+    <input class="range-input" type="range" name="impact" min="0" max="10" step="1" value="0" aria-label="Күнделікті өмірге әсері, 0-ден 10-ға дейін" />
+    <div class="range-labels"><span>0 — мүлдем кедергі жоқ</span><span>10 — өте қатты</span></div>
+  </fieldset>
+  <fieldset>
+    <legend>4. Зәр қашан ағады? Өзіңізге қатыстының бәрін белгілеңіз.</legend>
+    <span class="option-hint">Бұл сұрақ ұпайға әсер етпейді, бірақ дәрігерге белгілердің түрін анықтауға көмектеседі.</span>
+    <label><input type="checkbox" name="situation" value="дәретханаға жетпей жатып" /> Дәретханаға жетпей жатып</label>
+    <label><input type="checkbox" name="situation" value="жөтелгенде немесе түшкіргенде" /> Жөтелгенде немесе түшкіргенде</label>
+    <label><input type="checkbox" name="situation" value="ұйқы кезінде" /> Ұйқы кезінде</label>
+    <label><input type="checkbox" name="situation" value="дене белсенділігі кезінде" /> Дене белсенділігі немесе жаттығу кезінде</label>
+    <label><input type="checkbox" name="situation" value="зәр шығарып, киінгеннен кейін" /> Зәр шығарып, киінгеннен кейін</label>
+    <label><input type="checkbox" name="situation" value="айқын себепсіз" /> Айқын себепсіз</label>
+    <label><input type="checkbox" name="situation" value="үнемі" /> Үнемі</label>
+  </fieldset>
+  <div class="form-actions">
+    <button class="button button-primary" type="submit">Нәтижені есептеу</button>
+    <button class="button button-secondary" type="reset">Жауаптарды тазалау</button>
+  </div>
+</form>
+<div class="assessment-result" id="iciq-result" aria-live="polite" tabindex="-1"></div>
+
+<div class="tool-usage">
+<h2>Нәтижені қалай түсінуге болады</h2>
+<p>0-ден 21-ге дейінгі ұпай алғашқы үш сұраққа берілген жауаптардан құралады. Ұпай неғұрлым жоғары болса, белгілер өмірге соғұрлым көп әсер етеді:</p>
+<ul>
+  <li><strong>0</strong> — зәр ағуы жоқ;</li>
+  <li><strong>1–5</strong> — жеңіл дәреже;</li>
+  <li><strong>6–12</strong> — орташа;</li>
+  <li><strong>13–18</strong> — ауыр;</li>
+  <li><strong>19–21</strong> — өте ауыр.</li>
+</ul>
+<p>Жеңіл дәрежеде де белгілерді дәрігермен талқылаған жөн: ерте кезеңде қарапайым шаралар көмектеседі — <a href="patient-exercises.html">жаттығулар</a> және <a href="patient-prevention.html">әдеттерді өзгерту</a>. Нәтижені басып шығарып, зәр шығару күнделігімен бірге қабылдауға алып барыңыз. 3 ай емделгеннен кейін өзгерістерді көру үшін тесттен қайта өтуге болады.</p>
+<p class="small-note">ICIQ-SF — International Consultation on Incontinence Questionnaire – Short Form (Avery K. және т.б., Neurourol Urodyn 2004). Ауырлық дәрежесі Klovning A. және т.б., Neurourol Urodyn 2009 бойынша. Сауалнаманың құқық иесі — <a href="https://iciq.net" target="_blank" rel="noopener">ICIQ</a>.</p>
+</div>

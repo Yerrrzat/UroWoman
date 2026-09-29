@@ -54,6 +54,8 @@ UI = {
         "footer_note": "Материалы сайта носят информационный характер и не заменяют консультацию врача, диагностику или лечение.",
         "footer_privacy": "Политика конфиденциальности",
         "footer_sources": "Источники: ICS, EAU, AUA, NICE и исследование женщин с недержанием мочи в Казахстане (IJERPH, 2026).",
+        "menu": "Меню", "close": "Закрыть", "toc": "Содержание", "footer_sections": "Разделы", "footer_about": "О проекте",
+        "footer_tagline": "Информационный проект о раннем выявлении и профилактике недержания мочи у женщин Казахстана.",
     },
     "kk": {
         "label": "KZ", "name": "Қазақша", "og_locale": "kk_KZ",
@@ -64,6 +66,8 @@ UI = {
         "footer_note": "Сайт материалдары ақпараттық сипатта және дәрігер кеңесін, диагностиканы немесе емдеуді алмастырмайды.",
         "footer_privacy": "Құпиялылық саясаты",
         "footer_sources": "Дереккөздер: ICS, EAU, AUA, NICE және Қазақстандағы зәр ұстамайтын әйелдер туралы зерттеу (IJERPH, 2026).",
+        "menu": "Мәзір", "close": "Жабу", "toc": "Мазмұны", "footer_sections": "Бөлімдер", "footer_about": "Жоба туралы",
+        "footer_tagline": "Қазақстан әйелдеріндегі зәр ұстамауды ерте анықтау және алдын алу туралы ақпараттық жоба.",
     },
     "en": {
         "label": "EN", "name": "English", "og_locale": "en_US",
@@ -74,6 +78,8 @@ UI = {
         "footer_note": "The information on this site is educational and does not replace medical advice, diagnosis or treatment.",
         "footer_privacy": "Privacy policy",
         "footer_sources": "Sources: ICS, EAU, AUA, NICE and a study of women with urinary incontinence in Kazakhstan (IJERPH, 2026).",
+        "menu": "Menu", "close": "Close", "toc": "Contents", "footer_sections": "Sections", "footer_about": "About",
+        "footer_tagline": "An information project on early detection and prevention of urinary incontinence in women in Kazakhstan.",
     },
 }
 
@@ -119,6 +125,37 @@ def plain_text(fragment):
     return re.sub(r"\s+", " ", html.unescape(text)).strip()
 
 
+H2_RE = re.compile(r"<h2([^>]*)>(.*?)</h2>", re.S)
+
+
+def slugify(text, used):
+    base = re.sub(r"[^\w]+", "-", plain_text(text).lower()).strip("-")[:48] or "section"
+    anchor, n = base, 2
+    while anchor in used:
+        anchor, n = f"{base}-{n}", n + 1
+    used.add(anchor)
+    return anchor
+
+
+def with_toc(body, label):
+    """Give every <h2> an id and return (body, toc_html); no TOC for fewer than 3 headings."""
+    used, items = set(), []
+
+    def add_id(match):
+        attrs, text = match.group(1), match.group(2)
+        existing = re.search(r'id="([^"]+)"', attrs)
+        anchor = existing.group(1) if existing else slugify(text, used)
+        items.append((anchor, plain_text(text)))
+        return match.group(0) if existing else f'<h2 id="{anchor}"{attrs}>{text}</h2>'
+
+    body = H2_RE.sub(add_id, body)
+    if len(items) < 3:
+        return body, ""
+    links = "".join(f'<li><a href="#{a}">{html.escape(t)}</a></li>' for a, t in items)
+    return body, (f'<nav class="toc" aria-label="{html.escape(label)}">'
+                  f'<p class="toc-title">{html.escape(label)}</p><ol>{links}</ol></nav>')
+
+
 def render(lang, slug, page, slugs, versions, root, link_base=""):
     ui = UI[lang]
     esc = html.escape
@@ -156,10 +193,20 @@ def render(lang, slug, page, slugs, versions, root, link_base=""):
     canonical = "" if slug == "404" else f'\n  <link rel="canonical" href="{page_url(lang, slug)}" />'
     robots = '\n  <meta name="robots" content="noindex" />' if slug == "404" else ""
 
-    body_class = f' class="{esc(page["body_class"])}"' if page.get("body_class") else ""
-    main_class = page.get("main_class", "")
-    main_attr = f' class="{esc(main_class)}"' if main_class else ""
-    hero = f"\n    {page['hero']}" if page["hero"] else ""
+    # Layouts: "article" (reading column with an automatic table of contents),
+    # "hub" (section index) and "page" (free-form, e.g. the home page).
+    layout = page.get("layout", "page")
+    body_class = f' class="layout-{esc(layout)}"'
+    content = f"{page['hero']}\n{page['body']}" if page["hero"] else page["body"]
+    if layout == "article":
+        content, toc = with_toc(content, ui["toc"])
+        aside = f'<aside class="toc-wrap">{toc}</aside>' if toc else ""
+        content = f'<div class="wrap article-grid{" has-toc" if toc else ""}">{aside}<div class="prose">\n{content}\n</div></div>'
+    elif layout == "hub":
+        content = f'<div class="wrap hub">\n{content}\n</div>'
+    footer_links = "".join(
+        f'<li><a href="{link_base}{target}.html">{esc(label)}</a></li>' for target, label in ui["nav"][1:]
+    )
     title = page["title"] if slug == "index" else f"{page['title']} — UroWoman Kazakhstan"
     analytics = ""
     if ANALYTICS_ENABLED:
@@ -179,40 +226,52 @@ def render(lang, slug, page, slugs, versions, root, link_base=""):
   <meta property="og:title" content="{esc(title)}" />
   <meta property="og:description" content="{esc(page['description'])}" />
   <meta property="og:locale" content="{ui['og_locale']}" />{og_url}
-  <meta name="theme-color" content="#a94268" />
+  <meta name="theme-color" content="#fbf6f1" />
   <link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700;800&amp;family=Noto+Serif:wght@600;700&amp;display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&amp;family=Lora:ital,wght@0,500;0,600;1,500&amp;display=swap" />
   <link rel="stylesheet" href="{root}assets/styles.css?v={versions['styles.css']}" />
 </head>
 <body{body_class}>
   <a class="skip-link" href="#main">{esc(ui['skip'])}</a>
-  <header class="page-header">
-    <div class="container header-top">
-      <a class="brand" href="{link_base}index.html"><span class="brand-mark">UroWoman</span><span class="brand-sub">Kazakhstan</span></a>
-      <nav class="main-nav" aria-label="{esc(ui['nav_label'])}">{nav}</nav>
-      <div class="header-tools">
+  <header class="site-header">
+    <div class="wrap header-bar">
+      <a class="brand" href="{link_base}index.html">UroWoman<span>Kazakhstan</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-close="{esc(ui['close'])}">{esc(ui['menu'])}</button>
+      <div class="site-menu" id="site-menu">
+        <nav class="main-nav" aria-label="{esc(ui['nav_label'])}">{nav}</nav>
         <form class="site-search" role="search">
           <input type="search" name="q" placeholder="{esc(ui['search_placeholder'])}" aria-label="{esc(ui['search_label'])}" autocomplete="off" />
-          <button type="submit" aria-label="{esc(ui['search_button'])}">⌕</button>
+          <button type="submit">{esc(ui['search_button'])}</button>
         </form>
         <nav class="lang-switch" aria-label="{esc(ui['lang_label'])}">{switcher}</nav>
       </div>
     </div>
-    <div class="container search-results" aria-live="polite"></div>{hero}
+    <div class="wrap search-results" aria-live="polite"></div>
   </header>
 
-  <main id="main"{main_attr}>
-{page['body']}
+  <main id="main">
+{content}
   </main>
 
-  <footer class="footer">
-    <div class="container footer-content">
-      <p>{esc(ui['footer_note'])}</p>
-      <p>{esc(ui['footer_sources'])}</p>
-      <p>© {date.today().year} UroWoman Kazakhstan · <a href="{link_base}privacy.html">{esc(ui['footer_privacy'])}</a></p>
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <p class="brand">UroWoman<span>Kazakhstan</span></p>
+        <p>{esc(ui['footer_tagline'])}</p>
+      </div>
+      <div>
+        <p class="footer-title">{esc(ui['footer_sections'])}</p>
+        <ul>{footer_links}</ul>
+      </div>
+      <div>
+        <p class="footer-title">{esc(ui['footer_about'])}</p>
+        <p>{esc(ui['footer_note'])}</p>
+        <p>{esc(ui['footer_sources'])}</p>
+      </div>
     </div>
+    <div class="wrap footer-bottom">© {date.today().year} UroWoman Kazakhstan · <a href="{link_base}privacy.html">{esc(ui['footer_privacy'])}</a></div>
   </footer>
 
   <script src="{root}assets/search-index.js?v={versions['search-index.js']}" defer></script>
