@@ -1,0 +1,69 @@
+<!--
+title: Онлайн-тест ICIQ-SF
+description: Короткий опросник ICIQ-SF для оценки частоты недержания мочи и его влияния на жизнь. Результат можно распечатать для врача.
+main_class:
+-->
+    <section class="container section-block tool-workspace" id="iciq-sf">
+      <div class="section-header">
+        <p class="eyebrow">Онлайн-тест</p>
+        <h1>Опросник ICIQ-SF</h1>
+        <p>Вспомните, как вы себя чувствовали <strong>за последние 4 недели</strong>, и ответьте на вопросы. Это займёт около 2 минут.</p>
+        <p class="tool-disclaimer">Результат ориентировочный и не является диагнозом. Ответы обрабатываются только в вашем браузере: они не сохраняются и никуда не отправляются.</p>
+      </div>
+      <form class="assessment-form" id="iciq-form">
+        <fieldset>
+          <legend>1. Как часто у вас бывает подтекание мочи?</legend>
+          <label><input type="radio" name="frequency" value="0" required /> Никогда</label>
+          <label><input type="radio" name="frequency" value="1" /> Примерно раз в неделю или реже</label>
+          <label><input type="radio" name="frequency" value="2" /> Два-три раза в неделю</label>
+          <label><input type="radio" name="frequency" value="3" /> Примерно раз в день</label>
+          <label><input type="radio" name="frequency" value="4" /> Несколько раз в день</label>
+          <label><input type="radio" name="frequency" value="5" /> Постоянно</label>
+        </fieldset>
+        <fieldset>
+          <legend>2. Какое количество мочи, по вашему мнению, обычно подтекает (с защитой или без)?</legend>
+          <label><input type="radio" name="amount" value="0" required /> Нисколько</label>
+          <label><input type="radio" name="amount" value="2" /> Небольшое количество</label>
+          <label><input type="radio" name="amount" value="4" /> Умеренное количество</label>
+          <label><input type="radio" name="amount" value="6" /> Большое количество</label>
+        </fieldset>
+        <fieldset>
+          <legend>3. Насколько в целом подтекание мочи мешает вашей повседневной жизни? Сейчас выбрано: <span class="impact-value" id="impact-value">0</span></legend>
+          <input class="range-input" type="range" name="impact" min="0" max="10" step="1" value="0" aria-label="Влияние на повседневную жизнь, от 0 до 10" />
+          <div class="range-labels"><span>0 — совсем не мешает</span><span>10 — очень сильно</span></div>
+        </fieldset>
+        <fieldset>
+          <legend>4. Когда происходит подтекание? Отметьте всё, что относится к вам.</legend>
+          <span class="option-hint">Этот вопрос не влияет на баллы, но помогает врачу определить тип симптомов.</span>
+          <label><input type="checkbox" name="situation" value="не успеваю дойти до туалета" /> Не успеваю дойти до туалета</label>
+          <label><input type="checkbox" name="situation" value="при кашле или чихании" /> При кашле или чихании</label>
+          <label><input type="checkbox" name="situation" value="во сне" /> Во сне</label>
+          <label><input type="checkbox" name="situation" value="при физической активности" /> При физической активности или упражнениях</label>
+          <label><input type="checkbox" name="situation" value="после мочеиспускания, когда уже оделась" /> После мочеиспускания, когда уже оделась</label>
+          <label><input type="checkbox" name="situation" value="без видимой причины" /> Без видимой причины</label>
+          <label><input type="checkbox" name="situation" value="постоянно" /> Постоянно</label>
+        </fieldset>
+        <div class="form-actions">
+          <button class="button button-primary" type="submit">Рассчитать результат</button>
+          <button class="button button-secondary" type="reset">Очистить ответы</button>
+        </div>
+      </form>
+      <div class="assessment-result" id="iciq-result" aria-live="polite" tabindex="-1"></div>
+      <p class="source-note">ICIQ-SF — International Consultation on Incontinence Questionnaire – Short Form (Avery K. et al., Neurourol Urodyn 2004). Градация тяжести — по Klovning A. et al., Neurourol Urodyn 2009. Правообладатель опросника — <a href="https://iciq.net" target="_blank" rel="noopener">ICIQ</a>.</p>
+    </section>
+
+    <section class="container section-block">
+      <div class="section-header">
+        <h2>Как использовать результат</h2>
+      </div>
+      <div class="grid-2">
+        <div class="feature-card">
+          <h3>Пациенткам</h3>
+          <p>Заполните тест дома, распечатайте или сохраните результат в PDF и покажите его врачу. Результат — повод для разговора, а не диагноз.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Врачам</h3>
+          <p>Сумма баллов помогает оценить выраженность симптомов и отслеживать динамику на фоне лечения; ответы на последний вопрос подсказывают ведущий тип недержания.</p>
+        </div>
+      </div>
+    </section>
