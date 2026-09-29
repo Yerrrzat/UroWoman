@@ -1,0 +1,69 @@
+<!--
+title: ICIQ-SF online test
+description: The short ICIQ-SF questionnaire to assess how often urine leaks and how it affects your life. Print the result for your doctor.
+main_class:
+-->
+    <section class="container section-block tool-workspace" id="iciq-sf">
+      <div class="section-header">
+        <p class="eyebrow">Online test</p>
+        <h1>ICIQ-SF questionnaire</h1>
+        <p>Think about how you have been <strong>over the past 4 weeks</strong> and answer the questions. It takes about 2 minutes.</p>
+        <p class="tool-disclaimer">The result is indicative and is not a diagnosis. Your answers are processed only in your browser: they are not stored or sent anywhere.</p>
+      </div>
+      <form class="assessment-form" id="iciq-form">
+        <fieldset>
+          <legend>1. How often do you leak urine?</legend>
+          <label><input type="radio" name="frequency" value="0" required /> Never</label>
+          <label><input type="radio" name="frequency" value="1" /> About once a week or less often</label>
+          <label><input type="radio" name="frequency" value="2" /> Two or three times a week</label>
+          <label><input type="radio" name="frequency" value="3" /> About once a day</label>
+          <label><input type="radio" name="frequency" value="4" /> Several times a day</label>
+          <label><input type="radio" name="frequency" value="5" /> All the time</label>
+        </fieldset>
+        <fieldset>
+          <legend>2. How much urine do you usually leak (whether you wear protection or not)?</legend>
+          <label><input type="radio" name="amount" value="0" required /> None</label>
+          <label><input type="radio" name="amount" value="2" /> A small amount</label>
+          <label><input type="radio" name="amount" value="4" /> A moderate amount</label>
+          <label><input type="radio" name="amount" value="6" /> A large amount</label>
+        </fieldset>
+        <fieldset>
+          <legend>3. Overall, how much does leaking urine interfere with your everyday life? Selected: <span class="impact-value" id="impact-value">0</span></legend>
+          <input class="range-input" type="range" name="impact" min="0" max="10" step="1" value="0" aria-label="Impact on everyday life, from 0 to 10" />
+          <div class="range-labels"><span>0 — not at all</span><span>10 — a great deal</span></div>
+        </fieldset>
+        <fieldset>
+          <legend>4. When does urine leak? Tick all that apply to you.</legend>
+          <span class="option-hint">This question does not affect the score, but it helps the doctor identify the type of symptoms.</span>
+          <label><input type="checkbox" name="situation" value="before I can get to the toilet" /> Before I can get to the toilet</label>
+          <label><input type="checkbox" name="situation" value="when I cough or sneeze" /> When I cough or sneeze</label>
+          <label><input type="checkbox" name="situation" value="when asleep" /> When asleep</label>
+          <label><input type="checkbox" name="situation" value="when physically active" /> When I am physically active or exercising</label>
+          <label><input type="checkbox" name="situation" value="after urinating, when dressed" /> When I have finished urinating and am dressed</label>
+          <label><input type="checkbox" name="situation" value="for no obvious reason" /> For no obvious reason</label>
+          <label><input type="checkbox" name="situation" value="all the time" /> All the time</label>
+        </fieldset>
+        <div class="form-actions">
+          <button class="button button-primary" type="submit">Calculate result</button>
+          <button class="button button-secondary" type="reset">Clear answers</button>
+        </div>
+      </form>
+      <div class="assessment-result" id="iciq-result" aria-live="polite" tabindex="-1"></div>
+      <p class="source-note">ICIQ-SF — International Consultation on Incontinence Questionnaire – Short Form (Avery K. et al., Neurourol Urodyn 2004). Severity bands after Klovning A. et al., Neurourol Urodyn 2009. The questionnaire is owned by <a href="https://iciq.net" target="_blank" rel="noopener">ICIQ</a>.</p>
+    </section>
+
+    <section class="container section-block">
+      <div class="section-header">
+        <h2>How to use the result</h2>
+      </div>
+      <div class="grid-2">
+        <div class="feature-card">
+          <h3>For patients</h3>
+          <p>Complete the test at home, print it or save it as a PDF and show it to your doctor. The result is a starting point for a conversation, not a diagnosis.</p>
+        </div>
+        <div class="feature-card">
+          <h3>For doctors</h3>
+          <p>The total score helps gauge symptom severity and track change during treatment; answers to the last question suggest the leading type of incontinence.</p>
+        </div>
+      </div>
+    </section>

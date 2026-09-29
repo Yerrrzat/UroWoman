@@ -113,7 +113,8 @@
       const situationList = situations.length
         ? `<p><strong>${escapeHtml(t.situations)}:</strong> ${situations.map(escapeHtml).join('; ')}</p>`
         : '';
-      const today = new Date().toLocaleDateString(lang === 'kk' ? 'kk-KZ' : lang === 'en' ? 'en-GB' : 'ru-RU');
+      // Browsers often lack kk-KZ date data, so Kazakh uses the same dd.mm.yyyy format as Russian.
+      const today = new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'ru-RU');
 
       iciqResult.innerHTML =
         `<h3>${escapeHtml(t.scoreTitle(score))}</h3>` +
