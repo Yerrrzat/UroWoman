@@ -116,11 +116,12 @@ Netlify reads `netlify.toml`, runs `python3 build.py --check` and publishes `dis
 
 ```
 site/
-  assets/            styles.css, script.js (search, ICIQ-SF, mobile menu), favicon
+  assets/            styles.css, script.js (search, ICIQ-SF, mobile menu), favicon, img/ (photos)
   pages/ru|kk|en/    one HTML fragment per page, with a small metadata header
 build.py             static site generator, link checker, dev server
 survey/              Google Apps Script that stores opt-in survey answers, setup guide
 netlify.toml         build command, security and cache headers
+CREDITS.md           source, author and licence of every photo
 .github/workflows/   CI
 ```
 
@@ -132,17 +133,20 @@ title: Pelvic floor muscle training
 description: How to find your pelvic floor muscles and a 12-week plan.
 section: patient
 layout: article
+image: exercises          (photo from site/assets/img, shown in the header and on cards)
+tag: Exercises
+summary: How to find the right muscles and a 12-week plan
 -->
 <h1>…</h1>
 ```
 
-`layout: article` gives a reading column with an automatic table of contents; `layout: hub` is a section index. Reusable blocks include `note`, `note-warn`, `pair`, `facts`, `flow`, `myth` and `sources`.
+`layout: article` gives a reading column with an automatic table of contents; `layout: hub` is a section index. Section pages list articles with `<!-- cards: slug, slug -->`, which builds photo cards from each page's metadata. Reusable blocks include `note`, `note-warn`, `pair`, `facts`, `flow`, `myth` and `sources`.
 
 ## Screenshots
 
-| ICIQ-SF test | Article |
+| ICIQ-SF test | Section page with photo cards |
 |---|---|
-| ![ICIQ-SF test](.github/assets/test.png) | ![Article](.github/assets/article.png) |
+| ![ICIQ-SF test](.github/assets/test.png) | ![Section page](.github/assets/cards.png) |
 
 ## Disclaimer
 

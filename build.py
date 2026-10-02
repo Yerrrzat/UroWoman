@@ -169,7 +169,56 @@ def with_toc(body, label):
                   f'<p class="toc-title">{html.escape(label)}</p><ol>{links}</ol></nav>')
 
 
-def render(lang, slug, page, slugs, versions, root, link_base=""):
+CARDS_RE = re.compile(r"<!-- cards: (.*?) -->")
+HERO_PARTS = (
+    ("crumbs", re.compile(r'<p class="crumbs">.*?</p>', re.S)),
+    ("h1", re.compile(r"<h1[^>]*>.*?</h1>", re.S)),
+    ("lead", re.compile(r'<p class="lead">.*?</p>', re.S)),
+)
+
+
+def photo(name, root, cls=""):
+    """Decorative photo from site/assets/img (credits are listed in CREDITS.md)."""
+    attr = f' class="{cls}"' if cls else ""
+    return f'<img{attr} src="{root}assets/img/{html.escape(name)}.jpg" alt="" loading="lazy" decoding="async" />'
+
+
+def render_cards(content, pages, root, link_base):
+    """Replace "<!-- cards: slug, slug -->" with photo cards built from each page's metadata."""
+    def cards(match):
+        items = []
+        for target in (name.strip() for name in match.group(1).split(",")):
+            meta = pages[target]
+            tag = f'<span class="card-tag">{html.escape(meta["tag"])}</span>' if meta.get("tag") else ""
+            image = photo(meta["image"], root) if meta.get("image") else ""
+            items.append(
+                f'<a class="card" href="{link_base}{target}.html">'
+                f'<span class="card-photo">{image}{tag}</span>'
+                f'<span class="card-body"><strong>{html.escape(meta.get("card_title", meta["title"]))}</strong>'
+                f'<span>{html.escape(meta.get("summary", meta["description"]))}</span></span></a>'
+            )
+        return '<div class="cards">' + "".join(items) + "</div>"
+    return CARDS_RE.sub(cards, content)
+
+
+def split_hero(content, page, root):
+    """Move breadcrumbs, <h1> and lead out of the body into a full-width green page header."""
+    parts = {}
+    for key, pattern in HERO_PARTS:
+        match = pattern.search(content)
+        if match:
+            parts[key] = match.group(0)
+            content = content[:match.start()] + content[match.end():]
+    if "h1" not in parts:
+        return "", content
+    image = f'<div class="page-hero-photo">{photo(page["image"], root)}</div>' if page.get("image") else ""
+    text = "".join(parts.get(key, "") for key, _ in HERO_PARTS)
+    hero = (f'<header class="page-hero{" has-photo" if image else ""}"><div class="wrap page-hero-grid">'
+            f'<div class="page-hero-text">{text}</div>{image}</div></header>')
+    return hero, content
+
+
+def render(lang, slug, page, slugs, versions, root, link_base="", pages=None):
     ui = UI[lang]
     esc = html.escape
     section = page.get("section", slug)
@@ -213,12 +262,15 @@ def render(lang, slug, page, slugs, versions, root, link_base=""):
     if SURVEY_ENABLED and IS_PRODUCTION:
         body_class += f' data-survey="{esc(SURVEY_ENDPOINT)}"'
     content = f"{page['hero']}\n{page['body']}" if page["hero"] else page["body"]
+    content = render_cards(content, pages or {}, root, link_base)
     if layout == "article":
+        hero, content = split_hero(content, page, root)
         content, toc = with_toc(content, ui["toc"])
         aside = f'<aside class="toc-wrap">{toc}</aside>' if toc else ""
-        content = f'<div class="wrap article-grid{" has-toc" if toc else ""}">{aside}<div class="prose">\n{content}\n</div></div>'
+        content = f'{hero}<div class="wrap article-grid{" has-toc" if toc else ""}">{aside}<div class="prose">\n{content}\n</div></div>'
     elif layout == "hub":
-        content = f'<div class="wrap hub">\n{content}\n</div>'
+        hero, content = split_hero(content, page, root)
+        content = f'{hero}<div class="wrap hub">\n{content}\n</div>'
     footer_links = "".join(
         f'<li><a href="{link_base}{target}.html">{esc(label)}</a></li>' for target, label in ui["nav"][1:]
     )
@@ -241,7 +293,7 @@ def render(lang, slug, page, slugs, versions, root, link_base=""):
   <meta property="og:title" content="{esc(title)}" />
   <meta property="og:description" content="{esc(page['description'])}" />
   <meta property="og:locale" content="{ui['og_locale']}" />{og_url}
-  <meta name="theme-color" content="#fbf6f1" />
+  <meta name="theme-color" content="#1f4d3f" />
   <link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -340,12 +392,13 @@ def build():
         for slug, page in pages[lang].items():
             if slug == "404":
                 continue
-            (out_dir / f"{slug}.html").write_text(render(lang, slug, page, slugs, versions, root), encoding="utf-8")
+            (out_dir / f"{slug}.html").write_text(render(lang, slug, page, slugs, versions, root, pages=pages[lang]), encoding="utf-8")
 
     # 404 is served from arbitrary paths, so it links from the site root.
     if "404" in pages[DEFAULT_LANG]:
         (DIST / "404.html").write_text(
-            render(DEFAULT_LANG, "404", pages[DEFAULT_LANG]["404"], slugs, versions, BASE_PATH, link_base=BASE_PATH),
+            render(DEFAULT_LANG, "404", pages[DEFAULT_LANG]["404"], slugs, versions, BASE_PATH,
+                   link_base=BASE_PATH, pages=pages[DEFAULT_LANG]),
             encoding="utf-8",
         )
 
