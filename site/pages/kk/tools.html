@@ -7,10 +7,23 @@ layout: article
 <p class="crumbs"><a href="index.html">Басты бет</a> / ICIQ-SF тесті</p>
 <h1 id="iciq-sf">ICIQ-SF тесті</h1>
 <p class="lead">Дәрігерлер зәрдің қаншалықты жиі ағатынын және оның өмірге қаншалықты кедергі келтіретінін бағалау үшін қолданатын халықаралық сауалнама. <strong>Соңғы 4 аптада</strong> өзіңізді қалай сезінгеніңізді еске түсіріңіз. Бұл шамамен 2 минут алады.</p>
-<aside class="note"><p>Нәтиже шамамен алынған және диагноз болып табылмайды. Жауаптар тек сіздің браузеріңізде өңделеді: олар сақталмайды және ешқайда жіберілмейді.</p></aside>
+<aside class="note"><p><!-- if survey -->Нәтиже шамамен алынған және диагноз болып табылмайды. Жауаптар сіздің браузеріңізде өңделеді. Зерттеушілерге олар тек анонимді түрде және төменде өзіңіз келісім берсеңіз ғана жіберіледі.<!-- else -->Нәтиже шамамен алынған және диагноз болып табылмайды. Жауаптар тек сіздің браузеріңізде өңделеді: олар сақталмайды және ешқайда жіберілмейді.<!-- endif --></p></aside>
 </div>
 
 <form class="assessment-form" id="iciq-form">
+<!-- if survey -->
+  <fieldset class="survey-block">
+    <legend>Зерттеуге қатысу (қалауыңыз бойынша)</legend>
+    <span class="option-hint">UroWoman Kazakhstan Қазақстан әйелдерінде зәр ұстамаудың қаншалықты жиі кездесетінін зерттейді. Сіз көмектесе аласыз: тест жауаптарын және өзіңіз туралы бірнеше мәліметті анонимді түрде бөлісіңіз. Біз аты-жөніңізді, телефоныңызды немесе email-іңізді сұрамаймыз және кім екеніңізді біле алмаймыз. Келісімсіз тест әдеттегідей жұмыс істейді және ештеңе жіберілмейді.</span>
+    <label><input type="checkbox" name="consent" id="survey-consent" value="yes" /> Мен 18 жастамын немесе одан үлкенмін және жауаптарымды ғылыми зерттеу үшін анонимді түрде беруге келісемін</label>
+    <div class="survey-fields" id="survey-fields" hidden>
+      <label class="field">Жасыңыз (толық жыл)<input type="number" name="age" min="18" max="100" step="1" inputmode="numeric" /></label>
+      <label class="field">Біліміңіз<select name="education"><option value="">Таңдаңыз</option><option value="secondary">Орта</option><option value="vocational">Арнайы орта</option><option value="incomplete_higher">Аяқталмаған жоғары</option><option value="higher">Жоғары</option><option value="postgraduate">Жоғары оқу орнынан кейінгі (магистратура, ғылыми дәреже)</option></select></label>
+      <label class="field">Жұмыспен қамтылуыңыз<select name="employment"><option value="">Таңдаңыз</option><option value="employed">Жұмыс істеймін</option><option value="unemployed">Жұмыс істемеймін</option><option value="homemaker">Үй шаруасындамын</option><option value="maternity_leave">Бала күтімі демалысындамын</option><option value="student">Студентпін</option><option value="retired">Зейнеттемін</option></select></label>
+      <label class="field">Отбасылық жағдайыңыз<select name="marital"><option value="">Таңдаңыз</option><option value="married">Тұрмыстамын</option><option value="cohabiting">Тіркелмеген некедемін</option><option value="single">Тұрмыста емеспін</option><option value="divorced">Ажырасқанмын</option><option value="widowed">Жесірмін</option></select></label>
+    </div>
+  </fieldset>
+<!-- endif -->
   <fieldset>
     <legend>1. Сізде зәр қаншалықты жиі ағады?</legend>
     <label><input type="radio" name="frequency" value="0" required /> Ешқашан</label>

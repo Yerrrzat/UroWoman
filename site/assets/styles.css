@@ -265,3 +265,13 @@ p { margin: 0 0 1em; }
 }
 .more { margin-top: 24px; }
 .home-note { margin: 0 0 72px; }
+
+/* Optional research survey on the test page */
+.survey-block { background: var(--sand); border-radius: var(--radius); padding: 24px !important; }
+.survey-block legend { float: left; width: 100%; }
+.survey-block .option-hint { clear: both; }
+.survey-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+.assessment-form label.field { display: grid; gap: 6px; padding: 0; margin: 0; background: none; border: 0; cursor: default; font-weight: 500; font-size: .95rem; }
+.field input, .field select { font: inherit; font-weight: 400; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 11px 14px; width: 100%; }
+.field input:focus, .field select:focus { outline: 3px solid rgba(164, 71, 107, .35); outline-offset: 1px; }
+@media (max-width: 600px) { .survey-fields { grid-template-columns: 1fr; } }

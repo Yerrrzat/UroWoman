@@ -7,10 +7,23 @@ layout: article
 <p class="crumbs"><a href="index.html">Главная</a> / Тест ICIQ-SF</p>
 <h1 id="iciq-sf">Тест ICIQ-SF</h1>
 <p class="lead">Международный опросник, который врачи используют, чтобы оценить, как часто подтекает моча и насколько это мешает жизни. Вспомните, как вы себя чувствовали <strong>за последние 4 недели</strong>. Это займёт около 2 минут.</p>
-<aside class="note"><p>Результат ориентировочный и не является диагнозом. Ответы обрабатываются только в вашем браузере: они не сохраняются и никуда не отправляются.</p></aside>
+<aside class="note"><p><!-- if survey -->Результат ориентировочный и не является диагнозом. Ответы обрабатываются в вашем браузере. Исследователям они передаются только анонимно и только если вы сами дадите согласие ниже.<!-- else -->Результат ориентировочный и не является диагнозом. Ответы обрабатываются только в вашем браузере: они не сохраняются и никуда не отправляются.<!-- endif --></p></aside>
 </div>
 
 <form class="assessment-form" id="iciq-form">
+<!-- if survey -->
+  <fieldset class="survey-block">
+    <legend>Участие в исследовании (по желанию)</legend>
+    <span class="option-hint">UroWoman Kazakhstan изучает, как часто недержание мочи встречается у женщин Казахстана. Вы можете помочь: анонимно поделиться ответами на тест и несколькими сведениями о себе. Мы не спрашиваем имя, телефон или email и не можем узнать, кто вы. Без согласия тест работает как обычно, и ничего не отправляется.</span>
+    <label><input type="checkbox" name="consent" id="survey-consent" value="yes" /> Мне 18 лет или больше, и я согласна анонимно передать свои ответы для научного исследования</label>
+    <div class="survey-fields" id="survey-fields" hidden>
+      <label class="field">Возраст (полных лет)<input type="number" name="age" min="18" max="100" step="1" inputmode="numeric" /></label>
+      <label class="field">Образование<select name="education"><option value="">Выберите</option><option value="secondary">Среднее</option><option value="vocational">Среднее специальное</option><option value="incomplete_higher">Незаконченное высшее</option><option value="higher">Высшее</option><option value="postgraduate">Послевузовское (магистратура, учёная степень)</option></select></label>
+      <label class="field">Занятость<select name="employment"><option value="">Выберите</option><option value="employed">Работаю</option><option value="unemployed">Не работаю</option><option value="homemaker">Домохозяйка</option><option value="maternity_leave">В декретном отпуске</option><option value="student">Студентка</option><option value="retired">На пенсии</option></select></label>
+      <label class="field">Семейное положение<select name="marital"><option value="">Выберите</option><option value="married">Замужем</option><option value="cohabiting">В незарегистрированном браке</option><option value="single">Не замужем</option><option value="divorced">Разведена</option><option value="widowed">Вдова</option></select></label>
+    </div>
+  </fieldset>
+<!-- endif -->
   <fieldset>
     <legend>1. Как часто у вас бывает подтекание мочи?</legend>
     <label><input type="radio" name="frequency" value="0" required /> Никогда</label>

@@ -17,7 +17,7 @@
 | **Content** | 21 pages per language, ~30,000 words, every article cites its sources |
 | **Stack** | Static site: HTML, CSS, vanilla JS, a ~400-line Python build script (stdlib only) |
 | **Hosting** | Netlify CDN, deploy previews for every pull request, GitHub Actions CI |
-| **Privacy** | No accounts, no forms, no cookies. Test answers never leave the browser |
+| **Privacy** | No accounts, no cookies. Test answers stay in the browser unless the visitor opts in to share them anonymously for research |
 
 ## The problem
 
@@ -110,6 +110,7 @@ Netlify reads `netlify.toml`, runs `python3 build.py --check` and publishes `dis
 
 - `SITE_URL` sets the public address for canonical links and the sitemap. On Netlify the built-in `URL` is used, so a custom domain is picked up automatically.
 - `GOATCOUNTER_CODE` enables analytics on production deploys only.
+- `SURVEY_ENDPOINT` turns on the optional research survey on the test page. With consent, a visitor's age, education, employment, marital status and ICIQ-SF answers are appended anonymously to a Google Sheet, which exports to Excel. Setup is described in [`survey/README.md`](survey/README.md).
 
 ## Project structure
 
@@ -118,6 +119,7 @@ site/
   assets/            styles.css, script.js (search, ICIQ-SF, mobile menu), favicon
   pages/ru|kk|en/    one HTML fragment per page, with a small metadata header
 build.py             static site generator, link checker, dev server
+survey/              Google Apps Script that stores opt-in survey answers, setup guide
 netlify.toml         build command, security and cache headers
 .github/workflows/   CI
 ```
