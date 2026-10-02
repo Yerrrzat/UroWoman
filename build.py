@@ -16,6 +16,10 @@ Environment variables:
                       picked up automatically once it is attached.
     GOATCOUNTER_CODE  GoatCounter site code (the "xxx" in xxx.goatcounter.com).
                       The counter is added only to production builds.
+    SURVEY_ENDPOINT   Google Apps Script web app URL that stores consented,
+                      anonymous questionnaire answers (see survey/README.md).
+                      When set, the consent block is shown on the test page;
+                      answers are actually sent only from production builds.
 """
 import hashlib
 import html
@@ -39,7 +43,15 @@ BASE_PATH = "/"
 # Visitor statistics. Netlify sets CONTEXT to "production" only for the main branch,
 # so deploy previews of other branches are not counted.
 GOATCOUNTER_CODE = os.environ.get("GOATCOUNTER_CODE", "").strip()
-ANALYTICS_ENABLED = bool(GOATCOUNTER_CODE) and os.environ.get("CONTEXT", "production") == "production"
+IS_PRODUCTION = os.environ.get("CONTEXT", "production") == "production"
+ANALYTICS_ENABLED = bool(GOATCOUNTER_CODE) and IS_PRODUCTION
+
+# Research survey. Pages may contain "<!-- if survey -->A<!-- else -->B<!-- endif -->":
+# A is kept when the endpoint is configured, B otherwise, so the privacy wording
+# always matches what the site really does.
+SURVEY_ENDPOINT = os.environ.get("SURVEY_ENDPOINT", "").strip()
+SURVEY_ENABLED = bool(SURVEY_ENDPOINT)
+SURVEY_RE = re.compile(r"<!-- if survey -->(.*?)(?:<!-- else -->(.*?))?<!-- endif -->", re.S)
 
 LANGS = ["ru", "kk", "en"]
 DEFAULT_LANG = "ru"
@@ -96,6 +108,7 @@ def parse_page(path):
             key, _, value = line.partition(":")
             meta[key.strip()] = value.strip()
         text = text[match.end():]
+    text = SURVEY_RE.sub(lambda m: m.group(1) if SURVEY_ENABLED else (m.group(2) or ""), text)
     hero, _, body = text.rpartition(HERO_SPLIT)
     meta["hero"] = hero.strip()
     meta["body"] = body.strip()
@@ -197,6 +210,8 @@ def render(lang, slug, page, slugs, versions, root, link_base=""):
     # "hub" (section index) and "page" (free-form, e.g. the home page).
     layout = page.get("layout", "page")
     body_class = f' class="layout-{esc(layout)}"'
+    if SURVEY_ENABLED and IS_PRODUCTION:
+        body_class += f' data-survey="{esc(SURVEY_ENDPOINT)}"'
     content = f"{page['hero']}\n{page['body']}" if page["hero"] else page["body"]
     if layout == "article":
         content, toc = with_toc(content, ui["toc"])
@@ -356,7 +371,8 @@ def build():
 
     total = sum(len(p) for p in pages.values())
     print(f"built {total} pages into {DIST.relative_to(ROOT)}/"
-          + (f" (GoatCounter: {GOATCOUNTER_CODE})" if ANALYTICS_ENABLED else " (analytics off)"))
+          + (f" (GoatCounter: {GOATCOUNTER_CODE})" if ANALYTICS_ENABLED else " (analytics off)")
+          + (" (survey on)" if SURVEY_ENABLED and IS_PRODUCTION else " (survey shown, not sending)" if SURVEY_ENABLED else " (survey off)"))
 
 
 def check_links():

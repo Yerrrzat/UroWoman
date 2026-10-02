@@ -16,7 +16,9 @@
       advice: 'Результат не является диагнозом. Покажите его врачу — он поможет выбрать обследование и лечение. Помощь доступна при любой степени выраженности.',
       situations: 'Когда происходит подтекание',
       print: 'Распечатать или сохранить в PDF',
-      date: 'Дата заполнения'
+      date: 'Дата заполнения',
+      surveySent: 'Спасибо! Ваши ответы анонимно переданы для исследования.',
+      surveyPreview: 'Тестовая версия сайта: ответы не отправлены.'
     },
     kk: {
       searchEmpty: 'Ештеңе табылмады. Басқа сөзбен іздеп көріңіз.',
@@ -32,7 +34,9 @@
       advice: 'Нәтиже диагноз емес. Оны дәрігерге көрсетіңіз — ол тексеру мен емді таңдауға көмектеседі. Көмек кез келген дәрежеде қолжетімді.',
       situations: 'Зәр қашан ағады',
       print: 'Басып шығару немесе PDF ретінде сақтау',
-      date: 'Толтырылған күні'
+      date: 'Толтырылған күні',
+      surveySent: 'Рақмет! Жауаптарыңыз зерттеу үшін анонимді түрде жіберілді.',
+      surveyPreview: 'Сайттың сынақ нұсқасы: жауаптар жіберілген жоқ.'
     },
     en: {
       searchEmpty: 'Nothing found. Try another word.',
@@ -48,7 +52,9 @@
       advice: 'This result is not a diagnosis. Show it to your doctor, who can help choose tests and treatment. Help is available at any level of severity.',
       situations: 'When urine leaks',
       print: 'Print or save as PDF',
-      date: 'Date completed'
+      date: 'Date completed',
+      surveySent: 'Thank you! Your answers have been shared anonymously for research.',
+      surveyPreview: 'Preview version of the site: answers were not sent.'
     }
   };
   const t = strings[lang] || strings.ru;
@@ -116,6 +122,50 @@
       sync();
     }
 
+    // Optional research survey: shown only when the build has an endpoint configured.
+    // Nothing is sent unless the visitor ticks the consent box.
+    const SITUATION_CODES = ['before_toilet', 'cough_sneeze', 'asleep', 'active', 'after_urinating', 'no_reason', 'all_the_time'];
+    const surveyEndpoint = document.body.dataset.survey || '';
+    const consent = document.getElementById('survey-consent');
+    const surveyFields = document.getElementById('survey-fields');
+    let lastSent = '';
+    if (consent && surveyFields) {
+      const syncConsent = () => {
+        surveyFields.hidden = !consent.checked;
+        surveyFields.querySelectorAll('input, select').forEach(field => { field.required = consent.checked; });
+      };
+      consent.addEventListener('change', syncConsent);
+      syncConsent();
+    }
+
+    const sendSurvey = (data, score, band) => {
+      if (!consent || !consent.checked) return '';
+      if (!surveyEndpoint) return t.surveyPreview;
+      const payload = JSON.stringify({
+        lang,
+        age: Number(data.get('age')),
+        education: data.get('education'),
+        employment: data.get('employment'),
+        marital: data.get('marital'),
+        frequency: Number(data.get('frequency')),
+        amount: Number(data.get('amount')),
+        impact: Number(data.get('impact')),
+        score,
+        severity: band,
+        situations: [...iciqForm.querySelectorAll('input[name="situation"]')]
+          .map((box, index) => (box.checked ? SITUATION_CODES[index] : null))
+          .filter(Boolean)
+      });
+      // The same answers are sent once, even if "Calculate" is pressed again.
+      if (payload !== lastSent) {
+        lastSent = payload;
+        // text/plain keeps this a "simple" request: Apps Script web apps cannot answer CORS preflights.
+        fetch(surveyEndpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: payload })
+          .catch(() => { lastSent = ''; });
+      }
+      return t.surveySent;
+    };
+
     iciqForm.addEventListener('submit', event => {
       event.preventDefault();
       const data = new FormData(iciqForm);
@@ -128,15 +178,18 @@
       // Browsers often lack kk-KZ date data, so Kazakh uses the same dd.mm.yyyy format as Russian.
       const today = new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'ru-RU');
 
+      const surveyNote = sendSurvey(data, score, band);
+
       iciqResult.innerHTML =
         `<h3>${escapeHtml(t.scoreTitle(score))}</h3>` +
         `<p><strong>${escapeHtml(t.levels[band])}</strong></p>` +
         situationList +
         `<p>${escapeHtml(band === 0 ? t.adviceNone : t.advice)}</p>` +
         `<p class="small-note">${escapeHtml(t.date)}: ${escapeHtml(today)}</p>` +
+        (surveyNote ? `<p class="small-note no-print">${escapeHtml(surveyNote)}</p>` : '') +
         `<button type="button" class="button button-secondary no-print" data-print>${escapeHtml(t.print)}</button>`;
       iciqResult.classList.add('visible');
-      // Count completions in GoatCounter (production only). Answers and scores are never sent.
+      // Count completions in GoatCounter (production only). Answers and scores are never sent there.
       if (window.goatcounter && window.goatcounter.count) {
         window.goatcounter.count({ path: `iciq-sf-completed-${lang}`, title: 'ICIQ-SF completed', event: true });
       }
@@ -148,7 +201,10 @@
     iciqForm.addEventListener('reset', () => {
       iciqResult.classList.remove('visible');
       iciqResult.innerHTML = '';
-      if (impactValue) setTimeout(() => { impactValue.textContent = impact.value; });
+      setTimeout(() => {
+        if (impactValue) impactValue.textContent = impact.value;
+        if (consent) consent.dispatchEvent(new Event('change'));
+      });
     });
   }
 })();

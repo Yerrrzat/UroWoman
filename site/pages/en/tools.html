@@ -7,10 +7,23 @@ layout: article
 <p class="crumbs"><a href="index.html">Home</a> / ICIQ-SF test</p>
 <h1 id="iciq-sf">ICIQ-SF test</h1>
 <p class="lead">An international questionnaire doctors use to assess how often urine leaks and how much it affects life. Think about how you've been <strong>over the past 4 weeks</strong>. It takes about 2 minutes.</p>
-<aside class="note"><p>The result is indicative and is not a diagnosis. Your answers are processed only in your browser: they are not stored or sent anywhere.</p></aside>
+<aside class="note"><p><!-- if survey -->The result is indicative and is not a diagnosis. Your answers are processed in your browser. They are shared with researchers only anonymously and only if you give consent below.<!-- else -->The result is indicative and is not a diagnosis. Your answers are processed only in your browser: they are not stored or sent anywhere.<!-- endif --></p></aside>
 </div>
 
 <form class="assessment-form" id="iciq-form">
+<!-- if survey -->
+  <fieldset class="survey-block">
+    <legend>Take part in research (optional)</legend>
+    <span class="option-hint">UroWoman Kazakhstan studies how common urinary incontinence is among women in Kazakhstan. You can help by anonymously sharing your test answers and a few details about yourself. We don't ask for your name, phone or email and cannot know who you are. Without consent the test works as usual and nothing is sent.</span>
+    <label><input type="checkbox" name="consent" id="survey-consent" value="yes" /> I am 18 or older and agree to share my answers anonymously for scientific research</label>
+    <div class="survey-fields" id="survey-fields" hidden>
+      <label class="field">Age (in full years)<input type="number" name="age" min="18" max="100" step="1" inputmode="numeric" /></label>
+      <label class="field">Education<select name="education"><option value="">Select</option><option value="secondary">Secondary</option><option value="vocational">Vocational</option><option value="incomplete_higher">Incomplete higher</option><option value="higher">Higher</option><option value="postgraduate">Postgraduate (master's, doctorate)</option></select></label>
+      <label class="field">Employment<select name="employment"><option value="">Select</option><option value="employed">Employed</option><option value="unemployed">Not employed</option><option value="homemaker">Homemaker</option><option value="maternity_leave">On maternity leave</option><option value="student">Student</option><option value="retired">Retired</option></select></label>
+      <label class="field">Marital status<select name="marital"><option value="">Select</option><option value="married">Married</option><option value="cohabiting">Living with a partner</option><option value="single">Single</option><option value="divorced">Divorced</option><option value="widowed">Widowed</option></select></label>
+    </div>
+  </fieldset>
+<!-- endif -->
   <fieldset>
     <legend>1. How often do you leak urine?</legend>
     <label><input type="radio" name="frequency" value="0" required /> Never</label>

@@ -8,6 +8,9 @@
   # GoatCounter site code, e.g. "urowoman" for https://urowoman.goatcounter.com.
   # Counting runs only on the production (main) deploy, never on branch previews.
   GOATCOUNTER_CODE = ""
+  # Google Apps Script web app URL that stores consented, anonymous survey answers
+  # (see survey/README.md). Leave empty to keep the survey block hidden.
+  SURVEY_ENDPOINT = ""
 
 [[headers]]
   for = "/*"
