@@ -180,7 +180,7 @@ HERO_PARTS = (
 def photo(name, root, cls=""):
     """Decorative photo from site/assets/img (credits are listed in CREDITS.md)."""
     attr = f' class="{cls}"' if cls else ""
-    return f'<img{attr} src="{root}assets/img/{html.escape(name)}.jpg" alt="" loading="lazy" decoding="async" />'
+    return f'<img{attr} src="{root}assets/img/{html.escape(name)}.webp" alt="" loading="lazy" decoding="async" />'
 
 
 def render_cards(content, pages, root, link_base):
@@ -271,6 +271,7 @@ def render(lang, slug, page, slugs, versions, root, link_base="", pages=None):
     elif layout == "hub":
         hero, content = split_hero(content, page, root)
         content = f'{hero}<div class="wrap hub">\n{content}\n</div>'
+    search_file = f"search-index-{lang}.js"
     footer_links = "".join(
         f'<li><a href="{link_base}{target}.html">{esc(label)}</a></li>' for target, label in ui["nav"][1:]
     )
@@ -308,7 +309,7 @@ def render(lang, slug, page, slugs, versions, root, link_base="", pages=None):
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" data-close="{esc(ui['close'])}">{esc(ui['menu'])}</button>
       <div class="site-menu" id="site-menu">
         <nav class="main-nav" aria-label="{esc(ui['nav_label'])}">{nav}</nav>
-        <form class="site-search" role="search">
+        <form class="site-search" role="search" data-index="{root}assets/search-index-{lang}.js?v={versions[search_file]}">
           <input type="search" name="q" placeholder="{esc(ui['search_placeholder'])}" aria-label="{esc(ui['search_label'])}" autocomplete="off" />
           <button type="submit">{esc(ui['search_button'])}</button>
         </form>
@@ -341,7 +342,6 @@ def render(lang, slug, page, slugs, versions, root, link_base="", pages=None):
     <div class="wrap footer-bottom">© {date.today().year} UroWoman Kazakhstan · <a href="{link_base}privacy.html">{esc(ui['footer_privacy'])}</a></div>
   </footer>
 
-  <script src="{root}assets/search-index.js?v={versions['search-index.js']}" defer></script>
   <script src="{root}assets/script.js?v={versions['script.js']}" defer></script>{analytics}
 </body>
 </html>
@@ -378,12 +378,14 @@ def build():
         ]
         for lang in LANGS
     }
-    (DIST / "assets" / "search-index.js").write_text(
-        "window.UW_SEARCH=" + json.dumps(search, ensure_ascii=False, separators=(",", ":")) + ";\n",
-        encoding="utf-8",
-    )
+    # One file per language, fetched by script.js on the first search only.
+    for lang in LANGS:
+        (DIST / "assets" / f"search-index-{lang}.js").write_text(
+            "window.UW_SEARCH=" + json.dumps(search[lang], ensure_ascii=False, separators=(",", ":")) + ";\n",
+            encoding="utf-8",
+        )
 
-    versions = {name: asset_hash(DIST / "assets" / name) for name in ("styles.css", "script.js", "search-index.js")}
+    versions = {name: asset_hash(DIST / "assets" / name) for name in ["styles.css", "script.js"] + [f"search-index-{lang}.js" for lang in LANGS]}
 
     for lang in LANGS:
         out_dir = lang_dir(lang)
