@@ -2,7 +2,7 @@
 
 **A trilingual health-information website on early detection and prevention of urinary incontinence in women in Kazakhstan.**
 
-[**Live site →**](https://urowoman.netlify.app) · [Русская версия README](README.ru.md)
+[**Live site →**](https://urowoman.live) · [Русская версия README](README.ru.md)
 
 ![Home page](.github/assets/home.png)
 

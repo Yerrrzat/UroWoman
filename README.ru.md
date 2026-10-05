@@ -2,7 +2,7 @@
 
 **Трёхъязычный информационный сайт о раннем выявлении и профилактике недержания мочи у женщин Казахстана.**
 
-[**Открыть сайт →**](https://urowoman.netlify.app) · [English README](README.md)
+[**Открыть сайт →**](https://urowoman.live) · [English README](README.md)
 
 ![Главная страница](.github/assets/home.png)
 
