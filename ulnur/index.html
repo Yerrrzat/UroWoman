@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ұлнұр, кешір мені</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Manrope:wght@500;700&display=swap">
+<style>
+  /* Layout: one narrow column read like a letter: name, letter, promises, a jar of notes, then the question. */
+  :root {
+    --bg: #fbeef1;
+    --paper: #fffafb;
+    --ink: #3a1d2c;
+    --muted: #7b5869;
+    --accent: #c22f5a;
+    --accent-ink: #ffffff;
+    --soft: #f4cdd8;
+    --line: #ebcbd4;
+    --shadow: 0 1px 2px rgb(58 29 44 / .06), 0 12px 32px -12px rgb(58 29 44 / .18);
+    --f-hand: "Caveat", "Segoe Script", "Comic Sans MS", cursive;
+    --f-body: "Lora", Georgia, "Times New Roman", serif;
+    --f-ui: "Manrope", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c1118; --paper: #281820; --ink: #f6e5ec; --muted: #c3a2b2;
+      --accent: #f2698f; --accent-ink: #2a0f1b; --soft: #4a2335; --line: #3e2733;
+      --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 14px 36px -14px rgb(0 0 0 / .6);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c1118; --paper: #281820; --ink: #f6e5ec; --muted: #c3a2b2;
+    --accent: #f2698f; --accent-ink: #2a0f1b; --soft: #4a2335; --line: #3e2733;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 14px 36px -14px rgb(0 0 0 / .6);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1.0625rem/1.7 var(--f-body);
+    padding-inline: 16px;
+    padding-block: 0;
+  }
+  main {
+    max-width: 40rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4.5rem;
+    padding-block: 3.5rem 4rem;
+  }
+  h2 {
+    font: 700 2.4rem/1.1 var(--f-hand);
+    color: var(--accent);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .label {
+    font: 700 .72rem/1 var(--f-ui);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  section { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  /* Hero */
+  .hero { align-items: center; text-align: center; gap: .5rem; }
+  .hero h1 {
+    margin: .25rem 0 0;
+    font: 700 clamp(4.5rem, 22vw, 9rem)/.9 var(--f-hand);
+    color: var(--accent);
+  }
+  .hero .kz {
+    font: italic 400 1.5rem/1.3 var(--f-body);
+    margin: 0;
+  }
+  .hero .ru { margin: 0; color: var(--muted); font-family: var(--f-ui); font-size: .95rem; }
+  .beat { width: 3.25rem; height: 3.25rem; color: var(--accent); margin-top: 1.25rem; animation: beat 1.6s ease-in-out infinite; }
+  @keyframes beat {
+    0%, 60%, 100% { transform: scale(1); }
+    15% { transform: scale(1.14); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.08); }
+  }
+
+  /* Letter */
+  .letter {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    padding: clamp(1.5rem, 5vw, 2.75rem);
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.7em - 1px), var(--line) calc(1.7em - 1px), var(--line) 1.7em);
+    background-position: 0 calc(clamp(1.5rem, 5vw, 2.75rem) + 1.2em);
+    background-origin: padding-box;
+  }
+  .letter p { margin: 0 0 1.7em; }
+  .letter p:last-child { margin-bottom: 0; }
+  .letter .greet { font: 700 2rem/1.7em var(--f-hand); color: var(--accent); margin-bottom: 0; }
+  .letter .sign { font: 700 1.9rem/1.7em var(--f-hand); color: var(--accent); text-align: right; }
+
+  /* Promises */
+  .promises { list-style: none; margin: 0; padding: 0; display: grid; gap: .9rem; }
+  .promises li { display: grid; grid-template-columns: 1.4rem 1fr; gap: .75rem; align-items: start; }
+  .promises svg { width: 1.1rem; height: 1.1rem; margin-top: .35rem; color: var(--accent); }
+  .promises span { min-width: 0; }
+
+  /* Jar of notes */
+  .jar {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+    text-align: center;
+    padding: 2rem 1.25rem;
+    border: 1.5px dashed var(--line);
+    border-radius: 18px;
+  }
+  .note {
+    font: 700 clamp(1.7rem, 6vw, 2.2rem)/1.2 var(--f-hand);
+    color: var(--ink);
+    margin: 0;
+    max-width: 28rem;
+    min-height: 2.7em;
+    display: grid;
+    place-items: center;
+    text-wrap: balance;
+  }
+  .note.flip { animation: flip .45s ease; }
+  @keyframes flip { from { opacity: 0; transform: translateY(8px) rotate(-2deg); } to { opacity: 1; transform: none; } }
+  .count { font: 500 .85rem/1 var(--f-ui); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* Buttons */
+  button {
+    font: 700 1rem/1 var(--f-ui);
+    border-radius: 999px;
+    padding: .95rem 1.5rem;
+    cursor: pointer;
+    border: 1.5px solid var(--accent);
+    transition: transform .25s ease, background-color .2s ease, opacity .25s ease;
+  }
+  button:focus-visible { outline: 3px solid var(--soft); outline-offset: 3px; }
+  .btn-main { background: var(--accent); color: var(--accent-ink); }
+  .btn-main:hover { filter: brightness(1.06); }
+  .btn-ghost { background: transparent; color: var(--accent); }
+  .btn-ghost:hover { background: var(--soft); }
+
+  /* Question */
+  .ask { align-items: center; text-align: center; gap: .75rem; }
+  .ask h2 { font-size: clamp(2.6rem, 11vw, 3.6rem); }
+  .ask .ru { margin: 0; color: var(--muted); font-family: var(--f-ui); }
+  .choices { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-top: 1.25rem; min-height: 6rem; }
+  #yes { transform-origin: center; }
+  .answer {
+    margin-top: 1rem;
+    padding: 1.75rem 1.5rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    max-width: 30rem;
+  }
+  .answer p { margin: 0; }
+  .answer .big { font: 700 2.4rem/1.15 var(--f-hand); color: var(--accent); margin-bottom: .5rem; }
+
+  footer { text-align: center; color: var(--muted); font: 500 .85rem/1.5 var(--f-ui); }
+  footer .hand { font: 700 1.35rem/1 var(--f-hand); color: var(--accent); }
+
+  #burst { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .beat, .note.flip { animation: none; }
+    button { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
+</svg>
+
+<main>
+  <header class="hero">
+    <span class="label">письмо для самой любимой</span>
+    <h1>Ұлнұр</h1>
+    <p class="kz">кешір мені, жаным</p>
+    <p class="ru">прости меня, пожалуйста</p>
+    <svg class="beat" aria-hidden="true"><use href="#heart"/></svg>
+  </header>
+
+  <article class="letter" aria-label="Письмо">
+    <p class="greet">Ұлнұр, жаным,</p>
+    <p>мне очень жаль. Ты не заслуживаешь того, что тебе пришлось почувствовать из‑за меня, и мне правда стыдно.</p>
+    <p>Я много думаю о том, что произошло. Твои чувства для меня важнее любого спора, и мне больно от мысли, что тебе было плохо из‑за меня.</p>
+    <p>Не хочу оправдываться. Хочу просто сказать: прости меня. Мне не хватает твоего голоса, твоего смеха и того спокойствия, которое бывает только рядом с тобой.</p>
+    <p>Ты самый дорогой человек в моей жизни. Я хочу, чтобы со мной тебе было тепло и легко, а не больно.</p>
+    <p class="sign">Сені жақсы көремін</p>
+  </article>
+
+  <section aria-labelledby="promises-title">
+    <span class="label">слово даю</span>
+    <h2 id="promises-title">Что я обещаю</h2>
+    <ul class="promises">
+      <li><svg aria-hidden="true"><use href="#heart"/></svg><span>Слушать тебя до конца, не перебивая.</span></li>
+      <li><svg aria-hidden="true"><use href="#heart"/></svg><span>Говорить спокойно, даже когда трудно.</span></li>
+      <li><svg aria-hidden="true"><use href="#heart"/></svg><span>Не копить обиды, а обсуждать всё сразу и честно.</span></li>
+      <li><svg aria-hidden="true"><use href="#heart"/></svg><span>Чаще говорить, как сильно ты мне дорога.</span></li>
+      <li><svg aria-hidden="true"><use href="#heart"/></svg><span>Доказывать это делами, а не только словами.</span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="jar-title">
+    <span class="label">баночка с записками</span>
+    <h2 id="jar-title">За что я тебя люблю</h2>
+    <div class="jar">
+      <p class="note" id="note" aria-live="polite">Нажми на кнопку и вытяни записку.</p>
+      <button class="btn-ghost" id="draw" type="button">Вытянуть записку</button>
+      <span class="count" id="count">записок в баночке: 10</span>
+    </div>
+  </section>
+
+  <section class="ask" aria-labelledby="ask-title">
+    <span class="label">самый главный вопрос</span>
+    <h2 id="ask-title">Ұлнұр, кешіресің бе?</h2>
+    <p class="ru">Ты меня простишь?</p>
+    <div class="choices" id="choices">
+      <button class="btn-main" id="yes" type="button">Иә, кешіремін</button>
+      <button class="btn-ghost" id="no" type="button">Жоқ</button>
+    </div>
+    <div class="answer" id="answer" hidden>
+      <p class="big">Рахмет, жаным!</p>
+      <p>Спасибо, что ты есть. Я сделаю всё, чтобы ты больше не грустила из‑за меня. Сені жақсы көремін.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="hand">для Ұлнұр, с любовью</div>
+  </footer>
+</main>
+
+<canvas id="burst" aria-hidden="true"></canvas>
+
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Jar of notes: every note comes out once, in random order, then the jar refills.
+  const reasons = [
+    "За твою улыбку, от которой сразу становится теплее.",
+    "За твой смех. Его хочется слышать каждый день.",
+    "За то, что ты умеешь слушать.",
+    "За то, что с тобой можно даже молчать и всё равно быть рядом.",
+    "За твою доброту к людям.",
+    "За то, что ты веришь в меня.",
+    "За твою силу и нежность одновременно.",
+    "За то, как ты смотришь, когда радуешься.",
+    "За все наши маленькие шутки, понятные только нам двоим.",
+    "За то, что ты — это ты. Другой такой нет."
+  ];
+  const note = document.getElementById("note");
+  const count = document.getElementById("count");
+  const draw = document.getElementById("draw");
+  let pool = [];
+  draw.addEventListener("click", () => {
+    if (!pool.length) pool = reasons.map((_, i) => i).sort(() => Math.random() - .5);
+    note.textContent = reasons[pool.pop()];
+    note.classList.remove("flip"); void note.offsetWidth; note.classList.add("flip");
+    count.textContent = pool.length ? "записок в баночке: " + pool.length : "это была последняя, но баночка снова полная";
+    draw.textContent = "Ещё одну";
+  });
+
+  // The question: "no" keeps shrinking and pleading, "yes" keeps growing.
+  const yes = document.getElementById("yes");
+  const no = document.getElementById("no");
+  const choices = document.getElementById("choices");
+  const answer = document.getElementById("answer");
+  const pleas = ["Жоқ", "Точно?", "Подумай ещё", "Ну пожалуйста", "Ұлнұр…", "Последний шанс"];
+  let tries = 0;
+  no.addEventListener("click", () => {
+    tries++;
+    if (tries >= pleas.length) { no.hidden = true; yes.style.transform = "scale(1.35)"; yes.focus(); return; }
+    no.textContent = pleas[tries];
+    no.style.transform = "scale(" + Math.max(.55, 1 - tries * .09) + ")";
+    yes.style.transform = "scale(" + (1 + tries * .07) + ")";
+  });
+  yes.addEventListener("click", () => {
+    choices.hidden = true;
+    answer.hidden = false;
+    burst();
+  });
+
+  // Heart burst on "yes".
+  const canvas = document.getElementById("burst");
+  const ctx = canvas.getContext("2d");
+  function heart(x, y, s, rot, color, alpha) {
+    ctx.save();
+    ctx.translate(x, y); ctx.rotate(rot); ctx.globalAlpha = alpha; ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, s * .3);
+    ctx.bezierCurveTo(0, 0, -s * .5, 0, -s * .5, s * .3);
+    ctx.bezierCurveTo(-s * .5, s * .6, 0, s * .8, 0, s);
+    ctx.bezierCurveTo(0, s * .8, s * .5, s * .6, s * .5, s * .3);
+    ctx.bezierCurveTo(s * .5, 0, 0, 0, 0, s * .3);
+    ctx.fill();
+    ctx.restore();
+  }
+  function burst() {
+    if (reduce) return;
+    const dpr = window.devicePixelRatio || 1;
+    const w = innerWidth, h = innerHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const css = getComputedStyle(document.documentElement);
+    const colors = [css.getPropertyValue("--accent").trim(), css.getPropertyValue("--soft").trim(), "#ff8fab", "#e63946"];
+    const r = answer.getBoundingClientRect();
+    const ox = r.left + r.width / 2, oy = r.top + 20;
+    const parts = Array.from({ length: 90 }, () => {
+      const a = Math.random() * Math.PI * 2, v = 3 + Math.random() * 7;
+      return { x: ox, y: oy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, s: 10 + Math.random() * 18,
+               rot: Math.random() - .5, vr: (Math.random() - .5) * .1, c: colors[(Math.random() * colors.length) | 0], life: 1 };
+    });
+    (function tick() {
+      ctx.clearRect(0, 0, w, h);
+      let alive = false;
+      for (const p of parts) {
+        p.vy += .18; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life -= .009;
+        if (p.life > 0 && p.y < h + 40) { alive = true; heart(p.x, p.y, p.s, p.rot, p.c, Math.min(1, p.life * 1.5)); }
+      }
+      if (alive) requestAnimationFrame(tick); else ctx.clearRect(0, 0, w, h);
+    })();
+  }
+})();
+</script>
+</body>
+</html>
